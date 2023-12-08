@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/aronsonben/uptimer/static/css/main.52b371c8.css",
+    "main.js": "/aronsonben/uptimer/static/js/main.3005e4d3.js",
+    "static/js/787.186aa199.chunk.js": "/aronsonben/uptimer/static/js/787.186aa199.chunk.js",
+    "index.html": "/aronsonben/uptimer/index.html",
+    "main.52b371c8.css.map": "/aronsonben/uptimer/static/css/main.52b371c8.css.map",
+    "main.3005e4d3.js.map": "/aronsonben/uptimer/static/js/main.3005e4d3.js.map",
+    "787.186aa199.chunk.js.map": "/aronsonben/uptimer/static/js/787.186aa199.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.52b371c8.css",
+    "static/js/main.3005e4d3.js"
+  ]
+}

@@ -2,6 +2,7 @@ import './Uptimer.css';
 import { useState, useEffect } from 'react';
 import { Form, Button, Input, InputGroup, InputGroupText, Table } from 'reactstrap';
 import { useStopwatch } from 'react-timer-hook';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TASKLOG_SAMPLE = [
   {id: 1, time: '00:23:46', goal: 'research', notes: 'ice creams', tags: ['food']},
@@ -55,7 +56,6 @@ function LogTable({ taskLog }) {
         </thead>
         <tbody>
           {taskLog.map((task) => {
-            console.log(task);
             return (
               <LogItem task={task} />
             );
@@ -81,7 +81,7 @@ function LogItem({ task }) {
 
 function Uptimer() {
   const [goal, setGoal] = useState('');
-  // const [taskLog, setTaskLog] = useState(TASKLOG_SAMPLE);
+  const [taskLog, setTaskLog] = useState([]);
   const {
     seconds,
     minutes,
@@ -92,6 +92,70 @@ function Uptimer() {
     pause,
     reset,
   } = useStopwatch({ autoStart: false });
+
+  // Fetch log data from AsyncStorage on mount
+  useEffect(() => {
+      AsyncStorage.clear();
+      storeData(TASKLOG_SAMPLE);
+      async function startFetching() {
+        setTaskLog(await getData());
+      }
+      startFetching();
+  }, []);
+
+  // Fetch log data on update 
+  // useEffect(() => {
+  //   console.log('on update');
+
+  //   async function startFetching() {
+  //     let data = await getData();
+  //     setTaskLog(data);
+  //   }
+    
+  //   if (fetchIfTrue) {
+  //     startFetching();
+  //   }
+
+  //   return () => {
+  //     setFetch(false);
+  //   }
+  // }, [fetchIfTrue]);
+
+  // Add new data to AsyncStorage
+  const storeData = async (value) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem('taskLog', jsonValue);
+    } catch (e) {
+      // saving error
+    }
+  };
+
+  // Fetch data from AsyncStorage
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('taskLog');
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      // error reading value
+    }
+  };
+
+  const showData = async () => {
+    let data = await getData();
+    console.log(data);
+  }
+
+  /*const logNewTask = async (task) => {
+    // let test = {id: 3, time: '00:09:17', goal: 'extra', notes: 'new one', tags: ['test']};
+    let data = await getData();
+    data.push(task);
+    await storeData(data);
+    let newData = await getData();
+    console.log(newData);
+    setTaskLog(newData);
+  }
+  */
 
   function handleStart() {
     start(); 
@@ -116,8 +180,9 @@ function Uptimer() {
         seconds={seconds}
       />
       <LogTable 
-        taskLog={TASKLOG_SAMPLE}
+        taskLog={taskLog}
       />
+      <button onClick={showData}>data</button>
     </div>
   );
 }
